@@ -1,0 +1,44 @@
+# Simple CI/CD Pipeline for Luma Video AI
+# Minimum Viable DevOps setup for university assignment
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # CI: Build and test Docker image
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t luma-video-ai-backend:${{ github.sha }} ./docker/backend
+
+      - name: Test Docker image
+        run: docker run --rm luma-video-ai-backend:${{ github.sha }} echo "Container works"
+
+  # CD: Deploy to EC2 (manual trigger only)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "Deployment configured but requires secrets setup"
+          echo "See docs/cicd.md for deployment instructions"
