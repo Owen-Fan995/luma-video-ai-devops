@@ -1,0 +1,16 @@
+# Development Environment - Example Variables
+# Copy this file to terraform.tfvars and fill in actual values
+
+aws_region         = "us-east-1"
+environment        = "dev"
+vpc_cidr           = "10.0.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+# EC2 Configuration
+instance_type  = "t3.medium"
+min_instances  = 1
+max_instances  = 2
+
+# RDS Configuration
+rds_instance_class = "db.t3.small"
+enable_multi_az    = false
